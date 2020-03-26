@@ -3,6 +3,7 @@ import 'package:foodselection/components/category_item.dart';
 import '../models/dummy_data.dart';
 
 class CategoriesScreen extends StatelessWidget {
+  static final String screenId = 'CategoriesScreen';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,6 +17,7 @@ class CategoriesScreen extends StatelessWidget {
               (categoryData) => CategoryItem(
                 title: categoryData.title,
                 color: categoryData.color,
+                id: categoryData.id,
               ),
             )
             .toList(),
