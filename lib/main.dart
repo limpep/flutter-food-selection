@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:foodselection/models/dummy_data.dart';
+import 'package:foodselection/models/meal.dart';
 import 'package:foodselection/screens/category_meals_screen.dart';
 import 'package:foodselection/screens/filters_screen.dart';
 import 'package:foodselection/screens/meal_detail_screen.dart';
@@ -8,8 +10,44 @@ import 'screens/categories_screen.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   // This widget is the root of your application.
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Map<String, bool> _filters = {
+    'gluten': false,
+    'lactose': false,
+    'vegan': false,
+    'vegatarian': false,
+  };
+
+  List<Meal> _availableMeals = DUMMY_MEALS;
+
+  void _setFilters(Map<String, bool> _filterData) {
+    setState(() {
+      _filters = _filterData;
+
+      _availableMeals = DUMMY_MEALS.where((meal) {
+        if (_filters['gluten'] && !meal.isGlutenFree) {
+          return false;
+        }
+        if (_filters['lactose'] && !meal.isLactoseFree) {
+          return false;
+        }
+        if (_filters['vegan'] && !meal.isVegan) {
+          return false;
+        }
+        if (_filters['vegatarian'] && !meal.isVegetarian) {
+          return false;
+        }
+        return true;
+      }).toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -37,9 +75,13 @@ class MyApp extends StatelessWidget {
       routes: {
         TabsScreen.screenId: (context) => TabsScreen(),
         CategoriesScreen.screenId: (context) => CategoriesScreen(),
-        CategoryMealsScreen.screenId: (context) => CategoryMealsScreen(),
+        CategoryMealsScreen.screenId: (context) =>
+            CategoryMealsScreen(_availableMeals),
         MealDetailScreen.screenId: (context) => MealDetailScreen(),
-        FiltersScreen.screenId: (context) => FiltersScreen(),
+        FiltersScreen.screenId: (context) => FiltersScreen(
+              saveFilters: _setFilters,
+              currentFilters: _filters,
+            ),
       },
 //      onGenerateRoute: (settings) {
 //        print(settings.arguments);
