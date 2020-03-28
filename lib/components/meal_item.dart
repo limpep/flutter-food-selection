@@ -9,6 +9,7 @@ class MealItem extends StatelessWidget {
   final int duration;
   final Complexity complexity;
   final Affordability affordability;
+  final Function removeItem;
 
   const MealItem(
       {Key key,
@@ -17,7 +18,8 @@ class MealItem extends StatelessWidget {
       @required this.imageUrl,
       @required this.duration,
       @required this.complexity,
-      @required this.affordability})
+      @required this.affordability,
+      @required this.removeItem})
       : super(key: key);
 
   String get complexityText {
@@ -52,8 +54,15 @@ class MealItem extends StatelessWidget {
     }
   }
 
-  void selectMeal(BuildContext ctx) {
-    Navigator.pushNamed(ctx, MealDetailScreen.screenId, arguments: id);
+  void selectMeal(BuildContext ctx) async {
+    var mealDetailsScreen = await Navigator.pushNamed(
+        ctx, MealDetailScreen.screenId,
+        arguments: id);
+    print(mealDetailsScreen);
+
+    if (mealDetailsScreen != null) {
+      removeItem(mealDetailsScreen);
+    }
   }
 
   @override
